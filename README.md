@@ -1,3 +1,3 @@
-# Deep Learning Experments
+# Experiments
 
-Contains deep learning experiments and puzzles.
+Contains experiments and random stuff.
