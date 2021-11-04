@@ -20,7 +20,7 @@ def get_rot_matrix(alpha, beta, gamma):
         ])
     return R3 @ R2 @ R1
 
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(0)
 cap.set(3, 1280)
 cap.set(4, 720)
 aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
@@ -34,20 +34,28 @@ camera_matrix = np.array([
 
 mouse_active_x = None
 mouse_active_y = None
+mouse_on_x = None
+mouse_on_y = None
 def callback(event, x, y, flags, param):
     global mouse_active_x, mouse_active_y
+    global mouse_on_x, mouse_on_y
     if event == cv2.EVENT_LBUTTONDOWN:
         mouse_active_x = x
         mouse_active_y = y
         # print("Here")
+    mouse_on_x = x
+    mouse_on_y = y
 
 cv2.namedWindow("Frame")
 cv2.setMouseCallback("Frame",callback)
 
 R = np.eye(3)
 tl = [0,0,0]
+is_paused = False
 while True:
-    ret, frame = cap.read()
+    if not is_paused:
+        ret, frame_orig = cap.read()
+    frame = frame_orig.copy()
     # print(frame.shape)
     corners, ids, rejected = cv2.aruco.detectMarkers(frame, aruco_dict,
         parameters=aruco_params)
@@ -66,6 +74,9 @@ while True:
             cx = int(p[0][0]+p[1][0]+p[2][0]+p[3][0])//4
             cy = int(p[0][1]+p[1][1]+p[2][1]+p[3][1])//4
             t = t[0]
+            if mouse_on_y:
+                if  (cx-mouse_on_x)**2 + (cy-mouse_on_y)**2< 20*20:
+                    cv2.circle(frame, (cx,cy), (20), (0,255,255),-1)
             if mouse_active_y:
                 # print("Here")
                 if  (cx-mouse_active_x)**2 + (cy-mouse_active_y)**2< 20*20:
@@ -80,6 +91,8 @@ while True:
             # print(r)
             # cv2.putText(frame, f"{round(t[0]), round(t[1]),round(t[2])}",(cx+10,cy+10),cv2.FONT_HERSHEY_COMPLEX, 1, (0,0,255), 2)
             cv2.putText(frame, f"{round(t2[0]), round(t2[1]),round(t2[2])}",(cx+10,cy+10),cv2.FONT_HERSHEY_COMPLEX, 1, (0,0,255), 2)
+    if is_paused:
+        cv2.putText(frame, "Paused",(20,20),cv2.FONT_HERSHEY_COMPLEX, 1, (0,0,255), 2)
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
     if key == ord('q'):
@@ -87,6 +100,8 @@ while True:
     elif key == ord('r'):
         R = np.eye(3)
         tl = [0,0,0]
+    elif key == ord('p'):
+        is_paused = not is_paused
 
 
 cap.release()
