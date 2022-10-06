@@ -10,9 +10,10 @@ df = df[:852] # The data is empty after this
 df = df[['Home Team Goals','Away Team Goals']]
 df['total'] = df['Home Team Goals'] + df['Away Team Goals']
 
-print(f" Max: {df['total'].max()}, Min: {df['total'].min()}, Average: {df['total'].mean()}, Median: {df['total'].median()}")
+print(f" Max: {df['total'].max()}, Min: {df['total'].min()}, Average: {df['total'].mean()}, Median: {df['total'].median()}, Variance: {df['total'].var()}")
 
 lda = df['total'].mean()
+
 
 max_goals = int(df['total'].max())
 
