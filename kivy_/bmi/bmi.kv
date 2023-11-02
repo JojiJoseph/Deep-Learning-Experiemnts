@@ -1,0 +1,32 @@
+<BMI>:
+    orientation: "vertical"
+    GridLayout:
+        cols: 2
+        rows: 2
+        font_size: 100
+        size_hint: 1, 1
+        Label:
+            text: "Height in meters"
+            font_size: 50
+        TextInput:
+            id: height
+            hint_text: "Height in meters"
+            input_filter: "float"
+            multiline: False
+            on_text: root.on_text_input()
+            font_size: 50
+            halign: "center"
+        Label:
+            text: "Weight in kg"
+            font_size: 50
+        TextInput:
+            id: weight
+            hint_text: "Weight in kg"
+            input_filter: "float"
+            multiline: False
+            on_text: root.on_text_input()
+            font_size: 50
+            halign: "center"
+    Label:
+        text: "BMI: {}".format(root.bmi)
+        font_size: 50
