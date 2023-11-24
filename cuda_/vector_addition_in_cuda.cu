@@ -13,7 +13,7 @@ __global__ void add(int *a, int *b, int *c, int n) {
 
 int main() {
     // Generate input vectors h_a and h_b
-    int n = 100000000;
+    int n = 100 * 1000 * 1000;
     int *h_a = new int[n];
     int *h_b = new int[n];
     int *h_c = new int[n];
@@ -48,13 +48,17 @@ int main() {
     // Invoke kernel
     int block_size = 256;
     int grid_size = (n + block_size - 1) / block_size;
+    int gpu_execution_time = clock();
     add<<<grid_size, block_size>>>(d_a, d_b, d_c, n);
+    int gpu_execution_end_time = clock();
     // Transfer result from GPU memory to host
     cudaMemcpy(final_result, d_c, n * sizeof(int), cudaMemcpyDeviceToHost);
     int gpu_end_time = clock();
     // Convert gpu time to ms
     long gpu_time_used = (gpu_end_time - gpu_start_time) / double(CLOCKS_PER_SEC) * 1000;
+    long gpu_execution_time_used = (gpu_execution_end_time - gpu_execution_time) / double(CLOCKS_PER_SEC) * 1000 * 1000;
     std::cout << "GPU time: " << gpu_time_used << " ms" << std::endl;
+    std::cout << "GPU execution time: " << gpu_execution_time_used << " us" << std::endl;
 
     // Compare final result with CPU result
     for (int i = 0; i < n; i++) {
