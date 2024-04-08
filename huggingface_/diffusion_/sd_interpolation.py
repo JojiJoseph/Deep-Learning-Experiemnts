@@ -26,7 +26,7 @@ unet.to(torch_device)
 height = 512                        # default height of Stable Diffusion
 width = 512                         # default width of Stable Diffusion
 
-num_inference_steps = 10            # Number of denoising steps
+num_inference_steps = 100            # Number of denoising steps
 
 guidance_scale = 7.5                # Scale for classifier-free guidance
 
